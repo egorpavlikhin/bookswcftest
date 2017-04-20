@@ -25,7 +25,7 @@ namespace KishTestProject
         [PrincipalPermission(SecurityAction.Demand, Role = "Senior")]
         public bool Archive(string isbn)
         {
-            if (isbn == null)
+            if (string.IsNullOrWhiteSpace(isbn))
                 throw new ArgumentNullException("isbn");
 
             if (this.booksRepository.Archive(isbn))
@@ -41,14 +41,14 @@ namespace KishTestProject
         [PrincipalPermission(SecurityAction.Demand, Role = "Senior")]
         public bool Borrow(string isbn, string borrower)
         {
-            if (isbn == null)
+            if (string.IsNullOrWhiteSpace(isbn))
                 throw new ArgumentNullException("isbn");
-            if (borrower == null)
+            if (string.IsNullOrWhiteSpace(borrower))
                 throw new ArgumentNullException("borrower");
 
             var book = this.booksRepository.FindByISBN(isbn);
             if (book == null)
-                return false;
+                return false; // TODO: return something more informative
 
             // TODO: can the same person rent a book twice?
             if (this.bookRentsRepository.RentABook(book, borrower, DateTime.Now))
@@ -62,12 +62,12 @@ namespace KishTestProject
 
         public bool CanBeBorrowed(string isbn)
         {
-            if (isbn == null)
+            if (string.IsNullOrWhiteSpace(isbn))
                 throw new ArgumentNullException("isbn");
 
             var book = this.booksRepository.FindByISBN(isbn);
             if (book == null)
-                return false;
+                return false; // TODO: return something more informative
 
             return book.CopiesLeft > 0 && !book.Archived;
         }
@@ -92,9 +92,9 @@ namespace KishTestProject
         // TODO: return something bettter than just bool
         public bool Return(string isbn, string borrower)
         {
-            if (isbn == null)
+            if (string.IsNullOrWhiteSpace(isbn))
                 throw new ArgumentNullException("isbn");
-            if (borrower == null)
+            if (string.IsNullOrWhiteSpace(borrower))
                 throw new ArgumentNullException("borrower");
 
             var book = this.booksRepository.FindByISBN(isbn);
